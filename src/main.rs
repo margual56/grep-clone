@@ -4,7 +4,8 @@ use std::io::{
 	BufReader,
 	BufRead
 };
-use std::error::Error;
+use anyhow::{Context, Result};
+
 
 #[derive(StructOpt)]
 struct Cli {
@@ -16,17 +17,21 @@ struct Cli {
 	path: std::path::PathBuf,
 }
 
-fn main() {
+fn main() -> Result<()> {
     let args = Cli::from_args();
-	let file = match File::open(&args.path) {
-		Ok(file) => { BufReader::new(file) },
-		Err(_error) => { Err("Can't read file") }
-	};
+	let io_file = File::open(&args.path).with_context(|| format!("Could not read file {:?}", &args.path))?;
+	let file = BufReader::new(io_file);
 
-	for line in file.lines() {
+	find_matches(file, &args.pattern, &mut std::io::stdout());
+
+	Ok(())
+}
+
+fn find_matches(content: BufReader<File>, pattern: &str, mut writer: impl std::io::Write) {
+    for line in content.lines() {
 		let l = line.unwrap();
-		if l.to_lowercase().contains(&args.pattern) {
-			println!("{}", l);
+		if l.to_lowercase().contains(pattern) {
+			writeln!(writer, "{}", l);
 		}
-	}
+    }
 }
