@@ -2,7 +2,8 @@ use structopt::StructOpt;
 use std::fs::File;
 use std::io::{
 	BufReader,
-	BufRead
+	BufRead,
+	Write as IoWrite,
 };
 use anyhow::{Context, Result};
 
@@ -22,16 +23,18 @@ fn main() -> Result<()> {
 	let io_file = File::open(&args.path).with_context(|| format!("Could not read file {:?}", &args.path))?;
 	let file = BufReader::new(io_file);
 
-	find_matches(file, &args.pattern, &mut std::io::stdout());
+	find_matches(file, &args.pattern, &mut std::io::stdout())?;
 
 	Ok(())
 }
 
-fn find_matches(content: BufReader<File>, pattern: &str, mut writer: impl std::io::Write) {
+fn find_matches(content: BufReader<File>, pattern: &str, mut writer: impl IoWrite) -> Result<()>  {
     for line in content.lines() {
 		let l = line.unwrap();
 		if l.to_lowercase().contains(pattern) {
-			writeln!(writer, "{}", l);
+			writeln!(writer, "{}", l).with_context(|| format!("Could not write to the buffer. Maybe it is full"))?;
 		}
     }
+
+	Ok(())
 }
