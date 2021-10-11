@@ -2,23 +2,27 @@ use structopt::StructOpt;
 use std::fs::File;
 use std::io::{
 	BufReader,
+	BufRead
 };
-use anyhow::{Context, Result};
+use anyhow::{Result};
 
 
 #[derive(StructOpt)]
 struct Cli {
 	pattern: String,
-	#[structopt(parse(from_os_str))]
+	#[structopt(skip, parse(from_os_str))]
 	path: std::path::PathBuf,
 }
 
 fn main() -> Result<()> {
     let args = Cli::from_args();
-	let io_file = File::open(&args.path).with_context(|| format!("Could not read file {:?}", &args.path))?;
-	let file = BufReader::new(io_file);
+	
+	let reader: Box<dyn BufRead> = match File::open(&args.path) {
+        Err(_error) => Box::new(BufReader::new(std::io::stdin())),
+        Ok(file) => Box::new(BufReader::new(file))
+    };
 
-	grepclone::find_matches(file, &args.pattern, &mut std::io::stdout())?;
+	grepclone::find_matches(reader, &args.pattern, &mut std::io::stdout())?;
 
 	Ok(())
-}
+} 
