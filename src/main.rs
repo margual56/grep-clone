@@ -10,16 +10,16 @@ use anyhow::{Result};
 #[derive(StructOpt)]
 struct Cli {
 	pattern: String,
-	#[structopt(skip, parse(from_os_str))]
-	path: std::path::PathBuf,
+	#[structopt(short = "i", long = "input", parse(from_os_str))]
+    input: Option<std::path::PathBuf>,
 }
 
 fn main() -> Result<()> {
     let args = Cli::from_args();
 	
-	let reader: Box<dyn BufRead> = match File::open(&args.path) {
-        Err(_error) => Box::new(BufReader::new(std::io::stdin())),
-        Ok(file) => Box::new(BufReader::new(file))
+	let reader: Box<dyn BufRead> = match args.input {
+        None => Box::new(BufReader::new(std::io::stdin())),
+        Some(path) => Box::new(BufReader::new(File::open(path)?))
     };
 
 	grepclone::find_matches(reader, &args.pattern, &mut std::io::stdout())?;
