@@ -8,6 +8,7 @@ use anyhow::{Result};
 
 
 #[derive(StructOpt)]
+#[structopt(about = "Just a simple grep clone programmed in Rust. \ngrepclone takes either an input file (`-i` option) or reads the stdin if no file is passed as an argument.")]
 struct Cli {
 	pattern: String,
 	#[structopt(short = "i", long = "input", parse(from_os_str))]
