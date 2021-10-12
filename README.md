@@ -9,7 +9,9 @@ As mentioned in multiple places in this repo, this app was created following [th
 However, this version includes <b><u>piping support</u></b> (reading from stdin), meaning that the input file flag is optional. 
 It also implements a <b><u>Buffered Reader</u></b> instead of loading the entire file (or stdin) into memory at once.
 
-_Note: it also uses a Buffered output, which can cause performance issues as discussed in [the performance analysis](https://github.com/margual56/grep-clone/wiki/Why-slower%3F#why-is-grepclone-slower-than-gnus-grep)
+_Note: Using a Buffered Reader has a drawback, which is that you are creating a copy of the input, and processing it later._
+
+_Note II: it also uses a Buffered output, which can cause performance issues as discussed in [the performance analysis](https://github.com/margual56/grep-clone/wiki/Why-slower%3F#why-is-grepclone-slower-than-gnus-grep)._
 
 
 ## Future features
