@@ -35,6 +35,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
+name = "boyer-moore-magiclen"
+version = "0.2.14"
+dependencies = [
+ "debug-helper",
+]
+
+[[package]]
 name = "clap"
 version = "2.33.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -50,10 +57,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "debug-helper"
+version = "0.3.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "76fbd10dce159c002b9c688ae8ab7cd531151e185e0ad360f4bfea3b0eede3a8"
+
+[[package]]
 name = "grepclone"
 version = "0.2.0"
 dependencies = [
  "anyhow",
+ "boyer-moore-magiclen",
  "structopt",
  "termcolor",
 ]

@@ -9,3 +9,4 @@ edition = "2018"
 structopt = "0.3.13"
 anyhow = "1.0"
 termcolor = "1.1"
+boyer-moore-magiclen = {path = "./boyer-moore-magiclen"}
